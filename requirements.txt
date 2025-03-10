@@ -5,20 +5,3 @@ torch==2.0.1
 scipy==1.11.2
 numpy==1.25.2
 gunicorn==21.2.0
-
-# Procfile (for Heroku)
-web: gunicorn app:app
-
-# render.yaml (for Render)
-services:
-  - type: web
-    name: tts-api
-    env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app
-    envVars:
-      - key: PYTHONUNBUFFERED
-        value: true
-
-# runtime.txt (for Heroku)
-python-3.10.12
