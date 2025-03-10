@@ -1,7 +1,20 @@
 # requirements.txt
 flask==2.3.3
-TTS==0.14.3
-torch==2.0.1
-scipy==1.11.2
-numpy==1.25.2
-gunicorn==21.2.0
+TTS==0.22.0
+gunicorn
+pydub
+gTTS
+python-dotenv
+SpeechRecognition
+google-cloud-texttospeech
+soundfile
+torch
+torchvision
+python-multipart
+fastapi
+uvicorn
+openai
+anthropic
+validators
+python-jose
+passlib
