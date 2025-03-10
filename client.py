@@ -43,8 +43,8 @@ def tts_request(text, api_url, speed=1.0, speaker=None):
     # Decode the base64 audio data
     audio_data = base64.b64decode(data['audio'])
     
-    # Save to file
-    output_file = "tts_output.wav"
+    # Save to file with unique name
+    output_file = f"tts_output_{len(os.listdir('.'))}.wav"
     with open(output_file, "wb") as f:
         f.write(audio_data)
     
@@ -53,9 +53,17 @@ def tts_request(text, api_url, speed=1.0, speaker=None):
 
 # Usage example
 if __name__ == "__main__":
-    # Replace with your deployed API URL
-    API_URL = "https://your-tts-api.onrender.com"
+    # Deployed API URL
+    API_URL = "https://text-to-speech-coqui-tts.onrender.com"
     
-    # Example: Generate speech
-    text = "Hello, this is a test of the TTS API. It converts text to speech in the cloud."
-    tts_request(text, API_URL)
+    # Example texts with different speeds and variations
+    texts = [
+        "Hello, this is a test of the TTS API. It converts text to speech in the cloud.",
+        "This is a slower speech demonstration.",
+        "Welcome to the Text-to-Speech service powered by Coqui TTS."
+    ]
+    
+    # Generate speech with different speeds
+    for text in texts:
+        tts_request(text, API_URL, speed=1.0)  # Normal speed
+        tts_request(text, API_URL, speed=0.8)  # Slower speed
