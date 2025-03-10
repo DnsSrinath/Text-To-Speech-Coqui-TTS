@@ -7,6 +7,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from typing import Optional
 import logging
+import time
 
 # Configure logging to only use console output
 logging.basicConfig(
@@ -20,10 +21,10 @@ logger = logging.getLogger(__name__)
 
 class TextToSpeech:
     def __init__(self, 
-                 model_name="tts_models/en/vctk/vits", 
-                 max_download_attempts=3):
+                 model_name="tts_models/en/ljspeech/tacotron2-DDC", 
+                 max_download_time=180):  # Reduced to 3 minutes
         """
-        Initialize TTS with robust error handling and multiple download attempts
+        Initialize TTS with robust error handling and time-limited download
         """
         self.model = None
         self.synthesizer = None
@@ -31,18 +32,21 @@ class TextToSpeech:
         # Log system information
         logger.info(f"Python Version: {sys.version}")
         logger.info(f"Current Working Directory: {os.getcwd()}")
-        logger.info(f"Available Environment Variables: {list(os.environ.keys())}")
         
-        # Attempt to download and initialize model
-        for attempt in range(max_download_attempts):
-            try:
-                logger.info(f"Model Initialization Attempt {attempt + 1}")
-                self._initialize_model(model_name)
-                break
-            except Exception as e:
-                logger.error(f"Initialization Error (Attempt {attempt + 1}): {e}")
-                if attempt == max_download_attempts - 1:
-                    raise RuntimeError(f"Failed to initialize TTS model after {max_download_attempts} attempts")
+        # Attempt to download and initialize model with a time limit
+        start_time = time.time()
+        try:
+            logger.info(f"Starting Model Initialization: {model_name}")
+            self._initialize_model(model_name)
+            
+            # Log total initialization time
+            total_time = time.time() - start_time
+            logger.info(f"Model Initialization Completed in {total_time:.2f} seconds")
+        
+        except Exception as e:
+            total_time = time.time() - start_time
+            logger.error(f"Initialization Error after {total_time:.2f} seconds: {e}")
+            raise RuntimeError(f"Failed to initialize TTS model within {max_download_time} seconds")
 
     def _initialize_model(self, model_name):
         """
@@ -51,10 +55,13 @@ class TextToSpeech:
         from TTS.utils.manage import ModelManager
         from TTS.utils.synthesizer import Synthesizer
 
+        # Explicitly log download start
+        logger.info(f"Downloading TTS Model: {model_name}")
+        
         # Get model manager and download models
         model_manager = ModelManager()
         
-        logger.info(f"Downloading TTS Model: {model_name}")
+        # Download model paths
         model_path, config_path, _ = model_manager.download_model(model_name)
         
         logger.info("Initializing Synthesizer")
@@ -99,7 +106,8 @@ class TextToSpeech:
 
 # Global TTS instance
 try:
-    tts_engine = TextToSpeech()
+    # Use a smaller, faster-to-download model
+    tts_engine = TextToSpeech(model_name="tts_models/en/ljspeech/tacotron2-DDC")
 except Exception as e:
     logger.critical(f"Failed to create global TTS engine: {e}")
     tts_engine = None
@@ -141,7 +149,7 @@ async def health_check():
     return {
         "status": "healthy" if tts_engine is not None else "not initialized",
         "cuda_available": torch.cuda.is_available(),
-        "model": "VCTK VITS",
+        "model": "Tacotron2 DDC",
         "environment": {
             "python_version": sys.version,
             "working_directory": os.getcwd(),
