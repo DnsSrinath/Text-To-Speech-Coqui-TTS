@@ -1,11 +1,21 @@
+# Core Web Framework
 fastapi==0.109.0
 uvicorn==0.27.0
 gunicorn==21.2.0
+
+# TTS and Audio Processing
 TTS==0.22.0
+soundfile==0.12.1
+
+# Machine Learning and Numerical Computing
 torch==2.1.2
 torchvision==0.16.2
 numpy==1.26.3
 scipy==1.12.0
-soundfile==0.12.1
+
+# Data Validation
 pydantic==2.6.1
+
+# Auxiliary Libraries
 python-multipart==0.0.9
+requests==2.31.0
