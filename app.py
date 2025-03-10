@@ -8,13 +8,12 @@ from pydantic import BaseModel
 from typing import Optional
 import logging
 
-# Configure logging
+# Configure logging to only use console output
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.StreamHandler(sys.stdout),
-        logging.FileHandler('tts_app.log')
+        logging.StreamHandler(sys.stdout)  # Only log to console
     ]
 )
 logger = logging.getLogger(__name__)
