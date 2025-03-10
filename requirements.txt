@@ -19,3 +19,6 @@ pydantic==2.6.1
 # Auxiliary Libraries
 python-multipart==0.0.9
 requests==2.31.0
+
+# Logging
+python-json-logger==2.0.7
