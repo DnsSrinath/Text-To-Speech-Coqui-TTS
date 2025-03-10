@@ -8,7 +8,7 @@ from TTS.utils.manage import ModelManager
 from TTS.utils.synthesizer import Synthesizer
 
 class TextToSpeech:
-    def __init__(self, model_name="tts_models/en/ljspeech/tacotron2-DDC", 
+    def __init__(self, model_name="tts_models/en/vctk/vits", 
                  vocoder_name="vocoder_models/en/ljspeech/multiband-melgan"):
         """
         Initialize the Text-to-Speech engine with Coqui TTS models.
@@ -94,7 +94,16 @@ async def health_check():
         "cuda_available": torch.cuda.is_available()
     }
 
-# For local testing
+# For local and deployment testing
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    
+    # Use environment variable for port, default to 8000
+    port = int(os.environ.get("PORT", 8000))
+    
+    uvicorn.run(
+        "app:app", 
+        host="0.0.0.0", 
+        port=port, 
+        reload=False
+    )
