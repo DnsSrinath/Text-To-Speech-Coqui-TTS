@@ -8,9 +8,11 @@ services:
       python -m pip install --upgrade pip
       pip install -r requirements.txt
     startCommand: |
-      gunicorn --workers 2 --threads 4 --timeout 120 --bind 0.0.0.0:$PORT app:app
+      gunicorn --workers 2 --threads 4 --timeout 180 --bind 0.0.0.0:$PORT app:app
     envVars:
       - key: PYTHONUNBUFFERED
         value: true
       - key: PYTHON_VERSION
         value: 3.11.11
+      - key: LOGGING_LEVEL
+        value: INFO
